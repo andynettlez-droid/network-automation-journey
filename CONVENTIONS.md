@@ -46,6 +46,13 @@ Steps 3 and 4 are never skipped. They are the skill.
 - **Commits (Conventional Commits):** `feat:`, `fix:`, `docs:`, `chore:`, `test:`, `refactor:`. Imperative, present tense.
 - **One increment per commit** where practical. Commit only what was verified.
 
+## Environment (WSL / ContainerLab)
+
+- **Source on Windows, labs on Linux.** The repo lives on the Windows filesystem (`C:\…\ccna automation`) for editing + git. ContainerLab labs must be deployed from Linux-native disk under `~` (e.g. `~/netlab/<lab>`), **never from `/mnt/c`** — drvfs can't set Linux file permissions and SR Linux's config commit fails there. Keep topology/playbook source in the repo; copy or sync to `~` at run time.
+- **Docker** runs as a systemd service in the default `Ubuntu` distro. `docker` works without `sudo` in a shell that has the `docker` group (open a fresh session or run `newgrp docker`).
+- **Tear down labs after every session** (`containerlab destroy`) — blast-radius rule.
+- `ccna-ubuntu` distro is off-limits (separate study project).
+
 ## Definition of done (per increment)
 
 Built to the spec · Opus-reviewed · verified against the emulator · committed · journal line written. Only then start the next increment.

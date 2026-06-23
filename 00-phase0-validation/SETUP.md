@@ -60,10 +60,16 @@ ansible --version
 
 ## Validate (the Phase 0 gate)
 
+> **Run labs from Linux-native disk, never from `/mnt/c`.** The Windows mount (drvfs) can't do Linux file permissions, so SR Linux fails to commit its config (`config.tmp … Operation not permitted`, plus `Labdir file ACLs: operation not supported`). The repo *source* stays on the Windows side for editing + git; the lab *runtime* lives under your WSL home. Confirmed 2026-06-23.
+
+Copy the topology to Linux-native disk and deploy there:
+
 ```bash
-cd "/mnt/c/Users/andyn/Claude/Projects/ccna automation/00-phase0-validation"
-sudo containerlab deploy -t topology.clab.yml
-sudo containerlab inspect -t topology.clab.yml   # both nodes should show "running"
+mkdir -p ~/netlab/phase0
+cp "/mnt/c/Users/andyn/Claude/Projects/ccna automation/00-phase0-validation/topology.clab.yml" ~/netlab/phase0/
+cd ~/netlab/phase0
+sudo containerlab deploy  -t topology.clab.yml
+sudo containerlab inspect -t topology.clab.yml   # both nodes "running", no permission errors
 ```
 
 Confirm ground truth — drop into a node's CLI and look at the real device:

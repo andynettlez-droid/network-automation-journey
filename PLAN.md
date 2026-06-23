@@ -4,10 +4,10 @@ The live source of truth across sessions and both models. Agents read and update
 
 **Scope:** ContainerLab network automation (the six rungs). CCNA study is separate, on my own time — not tracked here.
 
-## Status: Phase 0 — Foundation (in progress)
+## Status: Phase 0 — Foundation (gate cleared; GitHub push pending)
 
-### Toolchain state (detected 2026-06-23)
-WSL2 ✓ (v2.7.8) · default distro **Ubuntu 26.04 LTS** ✓ (python3, git present) · **Docker / ContainerLab / Ansible: not yet installed** in Ubuntu. The `ccna-ubuntu` distro belongs to the separate study project — off-limits.
+### Toolchain state (validated 2026-06-23)
+WSL2 ✓ (v2.7.8) · default distro **Ubuntu 26.04 LTS** ✓ · **Docker 29.6.0, ContainerLab 0.76.1, Ansible 13.1.0 installed & validated**. Labs run from `~/netlab` (Linux-native) — **not** `/mnt/c` (drvfs breaks SR Linux's config commit). The `ccna-ubuntu` distro is off-limits (separate study project).
 
 ## Locked decisions (do not relitigate)
 
@@ -21,8 +21,8 @@ WSL2 ✓ (v2.7.8) · default distro **Ubuntu 26.04 LTS** ✓ (python3, git prese
 - [x] Phase 0 validation pack authored — `00-phase0-validation/` (topology + SETUP.md) and first Rung 1 spec (`specs/0001`)
 - [x] Local git initialized + first commit (`main`, f7fbee1)
 - [x] Weekly review reminder active
-- [ ] Install Docker + ContainerLab + Ansible inside Ubuntu (see `00-phase0-validation/SETUP.md`) — *your hands*
-- [ ] Deploy `topology.clab.yml`, confirm both nodes reachable via `sr_cli`, then `destroy` — **the Phase 0 gate**
+- [x] Install Docker + ContainerLab + Ansible inside Ubuntu
+- [x] Deploy validation topology from `~/netlab` — both nodes `running`, clean config commit — **Phase 0 gate cleared** (final `sr_cli` look + `destroy` to confirm)
 - [ ] Push repo to GitHub as `network-automation-journey` (public) — *needs your GitHub auth*
 
 ## The six rungs
@@ -39,8 +39,9 @@ WSL2 ✓ (v2.7.8) · default distro **Ubuntu 26.04 LTS** ✓ (python3, git prese
 _(append one line per verified increment: `[date] built X, ran it, result: ___, what I had to fix: ___`)_
 
 - [2026-06-23] Phase 0 repo scaffold created via Cowork.
-- [2026-06-23] Toolchain detected; validation pack + spec 0001 authored; git initialized (commit f7fbee1). Verify next: run SETUP.md, deploy the validation topology, reach a node's CLI, destroy.
+- [2026-06-23] Toolchain detected; validation pack + spec 0001 authored; git initialized (commit f7fbee1).
+- [2026-06-23] Toolchain installed + validated (Docker/ContainerLab/Ansible). Catch: `/mnt/c` drvfs breaks SR Linux config commit → labs now run from `~/netlab`. Logged in AI-ACCELERATION.md + journal.
 
 ## Next session starts here
 
-→ Install Docker + ContainerLab + Ansible inside the default Ubuntu distro (`00-phase0-validation/SETUP.md`), then deploy `topology.clab.yml`, reach `srl1` via `sr_cli`, and `destroy`. That clears the Phase 0 gate. Then create the GitHub repo and `git push -u origin main`. After that, Rung 1 begins from `specs/0001`.
+→ Phase 0 gate cleared. Create the GitHub repo and `git push -u origin main`, then start Rung 1 from `specs/0001` (idempotent interface config). Reminder: deploy Rung 1 labs from `~/netlab`, never `/mnt/c`.

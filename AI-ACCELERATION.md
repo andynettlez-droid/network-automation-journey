@@ -16,7 +16,7 @@ _(running list of things the AI got wrong that I caught — the single most hire
 
 | Date | What the AI produced | What was wrong | How I caught it (ground truth) |
 | --- | --- | --- | --- |
-|  |  |  |  |
+| 2026-06-23 | SETUP.md said to deploy the validation lab from the repo path on `/mnt/c` | drvfs can't set Linux file perms → SR Linux config commit failed (`config.tmp … Operation not permitted`); nodes ran but config didn't commit | Re-deployed from `~/netlab/phase0` (Linux-native fs) — commit succeeded cleanly, both nodes `running`. Established the source-on-Windows / labs-on-Linux rule (now in CONVENTIONS.md + SETUP.md). |
 
 ## Concepts AI explained faster than traditional resources
 
