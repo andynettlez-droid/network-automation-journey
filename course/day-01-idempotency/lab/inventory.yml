@@ -1,0 +1,15 @@
+# Ansible inventory for the Day 1 lab.
+# SR Linux exposes a JSON-RPC API; the nokia.srlinux collection drives it.
+#   ansible-galaxy collection install nokia.srlinux
+#   export SRL_PASSWORD='NokiaSrl1!'      # default SR Linux login: admin / NokiaSrl1!
+all:
+  vars:
+    ansible_connection: ansible.netcommon.httpapi
+    ansible_network_os: nokia.srlinux.srlinux
+    ansible_user: admin
+    ansible_password: "{{ lookup('env', 'SRL_PASSWORD') }}"
+    ansible_httpapi_use_ssl: true
+    ansible_httpapi_validate_certs: false
+  hosts:
+    srl1:
+      ansible_host: clab-day1-idempotency-srl1

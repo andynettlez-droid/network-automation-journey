@@ -1,0 +1,16 @@
+# Day 1 lab topology — 2-node Nokia SR Linux (license-free, auto-pulls).
+# Deploy from Linux-native disk (~/netlab), never /mnt/c. See course CONVENTIONS.
+#   sudo containerlab deploy  -t topology.clab.yml
+#   sudo containerlab destroy -t topology.clab.yml
+name: day1-idempotency
+
+topology:
+  nodes:
+    srl1:
+      kind: nokia_srlinux
+      image: ghcr.io/nokia/srlinux
+    srl2:
+      kind: nokia_srlinux
+      image: ghcr.io/nokia/srlinux
+  links:
+    - endpoints: ["srl1:e1-1", "srl2:e1-1"]

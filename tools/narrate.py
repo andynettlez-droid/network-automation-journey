@@ -60,17 +60,19 @@ def list_voices():
         print(f"{v['voice_id']}  |  {v['name']}  |  {desc}")
 
 
-def synth(script_path, out_path, voice_id):
+def synth(script_path, out_path, voice_id, speed=1.0):
     if not voice_id:
         sys.exit("ERROR: no voice id. Pass --voice <id> or set ELEVEN_VOICE_ID.")
     with open(script_path, encoding="utf-8") as f:
         text = f.read().strip()
     if not text:
         sys.exit("ERROR: script is empty.")
+    # speed: 0.7 (slowest) .. 1.2 (fastest); 1.0 = default. Lower = calmer pacing.
+    speed = max(0.7, min(1.2, float(speed)))
     body = json.dumps({
         "text": text,
         "model_id": MODEL_ID,
-        "voice_settings": {"stability": 0.5, "similarity_boost": 0.75},
+        "voice_settings": {"stability": 0.5, "similarity_boost": 0.75, "speed": speed},
     }).encode()
     req = urllib.request.Request(
         f"{API}/text-to-speech/{voice_id}",
@@ -103,9 +105,14 @@ def main():
         return
     _load_dotenv()
     voice = os.environ.get("ELEVEN_VOICE_ID")
+    speed = float(os.environ.get("ELEVEN_SPEED", "1.0"))
     if "--voice" in args:
         i = args.index("--voice")
         voice = args[i + 1]
+        del args[i:i + 2]
+    if "--speed" in args:
+        i = args.index("--speed")
+        speed = float(args[i + 1])
         del args[i:i + 2]
     script = args[0]
     here = os.path.dirname(os.path.abspath(__file__))
@@ -114,7 +121,7 @@ def main():
         os.path.splitext(os.path.basename(script))[0] + ".mp3",
     )
     out = args[1] if len(args) > 1 else os.path.normpath(default_out)
-    synth(script, out, voice)
+    synth(script, out, voice, speed)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,26 @@
+---
+# SOLUTION (instructor answer key) — idempotent interface config on srl1.
+#
+# Why it's idempotent: nokia.srlinux.config with `update:` DECLARES the desired
+# state and compares it to the running config. Run 1 differs -> applies -> changed.
+# Run 2 already matches -> no diff -> no change. The module closes the gap, it
+# doesn't blindly re-push.
+- name: "Day 1 — idempotent interface config on srl1"
+  hosts: srl1
+  gather_facts: false
+  tasks:
+    - name: "Declare ethernet-1/1 with an IPv4 address (declarative => idempotent)"
+      nokia.srlinux.config:
+        update:
+          - path: /interface[name=ethernet-1/1]
+            value:
+              admin-state: enable
+              subinterface:
+                - index: 0
+                  admin-state: enable
+                  ipv4:
+                    admin-state: enable
+                    address:
+                      - ip-prefix: 10.0.0.1/30
+    # Ground truth (always verify here, not the recap):
+    #   docker exec -it clab-day1-idempotency-srl1 sr_cli "show interface ethernet-1/1"
