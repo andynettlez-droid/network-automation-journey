@@ -1,0 +1,22 @@
+# Phase 0 validation topology — throwaway. Its only job is to prove the
+# toolchain works end to end (deploy -> reachable -> destroy) before any
+# real automation is built on top.
+#
+# Two Nokia SR Linux nodes (license-free, image auto-pulls from GHCR).
+#
+# Run these from inside WSL Ubuntu, in this folder:
+#   sudo containerlab deploy  -t topology.clab.yml
+#   sudo containerlab inspect -t topology.clab.yml
+#   sudo containerlab destroy -t topology.clab.yml
+name: phase0-validation
+
+topology:
+  nodes:
+    srl1:
+      kind: nokia_srlinux
+      image: ghcr.io/nokia/srlinux
+    srl2:
+      kind: nokia_srlinux
+      image: ghcr.io/nokia/srlinux
+  links:
+    - endpoints: ["srl1:e1-1", "srl2:e1-1"]

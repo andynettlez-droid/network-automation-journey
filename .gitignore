@@ -1,0 +1,41 @@
+# --- Secrets: never commit ---
+.env
+.env.*
+*.key
+*.pem
+secrets/
+# Any inventory/host file that may carry credentials
+inventory/*.local.yml
+hosts.local
+
+# --- ElevenLabs audio: regenerate from scripts, large + costs money ---
+audio_output/
+*.mp3
+
+# --- Terraform ---
+*.tfstate
+*.tfstate.*
+.terraform/
+crash.log
+
+# --- Python ---
+venv/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# --- Node / React (lesson-player) ---
+node_modules/
+dist/
+.vite/
+
+# --- Archived / out-of-scope ---
+_archive/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
