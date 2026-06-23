@@ -1,0 +1,9 @@
+Welcome to Rung One: deterministic automation. Before we touch anything, here is what we are doing, and why it matters.
+
+The whole ladder you are climbing, all the way up to self-driving, agentic networks, rests on one idea you have to own first. It is called idempotency. It is a big word for a simple, powerful promise: you describe the state you want the network to be in, and the automation makes reality match that description, no matter how many times you run it. Run it once, it makes the change. Run it again, it does nothing, because nothing needs changing. The network is already where you said it should be.
+
+Why does that matter so much? Because every higher rung, the pipelines, the self-healing, the AI agents, will run your automation over and over, often without you watching. If your automation blindly re-applies changes every single time, it is a loaded gun. If it is idempotent, it is safe to run a thousand times. That safety is the foundation everything else is built on.
+
+There is a second idea hiding inside this lesson, and for your career it is the more important one: never trust the tool's own report. The automation will tell you it succeeded. That is a claim, not proof. The only truth is what the device actually shows. So after every run, we go and look at the real device. The gap between what the tool claims and what the device shows is where all the real skill lives.
+
+So here is the shape of what is coming. First I will demonstrate. I will declare a desired state and apply it, then apply it again, and we will watch the second run change nothing. Then you will do it yourself, and you will deliberately break it, to see how it heals. And at every step, we verify against the device, not the summary. Let's begin.
