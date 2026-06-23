@@ -1,0 +1,17 @@
+---
+# Read-only smoke test: proves Ansible can reach srl1 over the SR Linux JSON-RPC API.
+# NOT part of the idempotency exercise — just confirms inventory + collection + creds work.
+#   ansible-playbook -i inventory.yml verify-connectivity.yml
+- name: "Rung 1 — connectivity smoke test (read-only)"
+  hosts: srl1
+  gather_facts: false
+  tasks:
+    - name: "Read SR Linux version from the state datastore"
+      nokia.srlinux.get:
+        paths:
+          - path: /system/information/version
+            datastore: state
+      register: srl_version
+    - name: "Show what the device returned (ground truth)"
+      ansible.builtin.debug:
+        var: srl_version.result

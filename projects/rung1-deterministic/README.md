@@ -2,11 +2,14 @@
 
 **Concept:** declare desired state, run automation, run it **again** and watch it do nothing. The truth lives in code; the device reflects it. This is the base of the whole ladder — everything above "decides"; this just "executes."
 
-## Status: scaffolded (config task is yours to write)
+## Status: plumbing verified — config task is yours to write
+
+The full path was driven and verified end-to-end on 2026-06-23 (deploy from `~/netlab` clean; `nokia.srlinux` collection installed; Ansible reached `srl1` and read state version `v26.3.2-426-g2b38957bbca`; lab destroyed clean). So the environment, inventory, collection, and credentials all work — the only thing left is the idempotent config task.
 
 ## Files
 - `topology.clab.yml` — 2-node SR Linux. Deploy from `~/netlab` (not `/mnt/c` — see repo `CONVENTIONS.md`).
 - `inventory.yml` — Ansible inventory for `srl1` (nokia.srlinux collection, JSON-RPC; password from `$SRL_PASSWORD`).
+- `verify-connectivity.yml` — read-only smoke test (reads the device version). Run it to confirm reachability before the exercise.
 - `configure-interface.yml` — the playbook. **The interface-config task is intentionally a TODO — write it by hand, not with an agent.**
 
 ## The exercise (by hand)

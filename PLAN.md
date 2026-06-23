@@ -41,7 +41,8 @@ _(append one line per verified increment: `[date] built X, ran it, result: ___, 
 - [2026-06-23] Phase 0 repo scaffold created via Cowork.
 - [2026-06-23] Toolchain detected; validation pack + spec 0001 authored; git initialized (commit f7fbee1).
 - [2026-06-23] Toolchain installed + validated (Docker/ContainerLab/Ansible). Catch: `/mnt/c` drvfs breaks SR Linux config commit → labs now run from `~/netlab`. Logged in AI-ACCELERATION.md + journal.
+- [2026-06-23] Rung 1 plumbing driven + verified end-to-end (Cowork): deploy from `~/netlab` clean, `nokia.srlinux` collection installed, Ansible reached `srl1` and read state version `v26.3.2`, lab destroyed clean. Remaining: write the idempotent config task.
 
 ## Next session starts here
 
-→ Phase 0 gate cleared. Create the GitHub repo and `git push -u origin main`, then start Rung 1 from `specs/0001` (idempotent interface config). Reminder: deploy Rung 1 labs from `~/netlab`, never `/mnt/c`.
+→ Phase 0 done; repo on GitHub; Rung 1 plumbing verified (branch `rung1/idempotent-interface`). Your rep: write the idempotent interface-config task in `projects/rung1-deterministic/configure-interface.yml`, deploy from `~/netlab/rung1`, run it twice and confirm the second run shows no change, then verify on the device (`show interface ethernet-1/1`). Opus reviews it for true idempotency before run #2. Reminder: labs run from `~/netlab`, never `/mnt/c`.
