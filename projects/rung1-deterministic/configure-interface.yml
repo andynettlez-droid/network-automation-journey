@@ -1,0 +1,34 @@
+---
+# Rung 1 — configure ONE interface on srl1, IDEMPOTENTLY.
+#
+# ┌─ READ THIS ─────────────────────────────────────────────────────────────┐
+# │ YOU write the config task below (the TODO). Writing it yourself and       │
+# │ watching the second run do nothing is the entire point of Rung 1 — don't  │
+# │ have an agent fill it in. Opus reviews it for TRUE idempotency before you  │
+# │ run it the second time.                                                   │
+# └───────────────────────────────────────────────────────────────────────────┘
+#
+# Prereqs:
+#   ansible-galaxy collection install nokia.srlinux
+#   export SRL_PASSWORD='NokiaSrl1!'
+#
+# Run:   ansible-playbook -i inventory.yml configure-interface.yml
+# Then run it AGAIN unchanged and confirm it reports OK / no change.
+
+- name: "Rung 1 — idempotent interface config on srl1"
+  hosts: srl1
+  gather_facts: false
+  tasks:
+    - name: "TODO (you) — declare desired state of ethernet-1/1 (an IP on subinterface 0)"
+      # Use a STATE-DECLARING module, not a raw command push:
+      #   nokia.srlinux.config  with an `update:` block setting the subinterface IPv4 address.
+      # Goal: run #1 = changed, run #2 (no edits) = no change.
+      # Hints (only after you've attempted it):
+      #   - path: /interface[name=ethernet-1/1]/admin-state  -> enable
+      #   - path: /interface[name=ethernet-1/1]/subinterface[index=0]/ipv4/address[ip-prefix=...]
+      # Replace this debug stub with the real task.
+      ansible.builtin.debug:
+        msg: "Replace me with an idempotent nokia.srlinux.config task."
+
+    # GROUND TRUTH — verify on the device, never trust changed/ok alone:
+    #   docker exec -it clab-rung1-deterministic-srl1 sr_cli "show interface ethernet-1/1"

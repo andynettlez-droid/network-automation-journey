@@ -1,0 +1,20 @@
+# Rung 1 — deterministic automation lab.
+# 2-node Nokia SR Linux (license-free, image auto-pulls).
+#
+# Deploy from Linux-native disk (NOT /mnt/c — see repo CONVENTIONS.md):
+#   mkdir -p ~/netlab/rung1
+#   cp topology.clab.yml ~/netlab/rung1/ && cd ~/netlab/rung1
+#   sudo containerlab deploy  -t topology.clab.yml
+#   sudo containerlab destroy -t topology.clab.yml
+name: rung1-deterministic
+
+topology:
+  nodes:
+    srl1:
+      kind: nokia_srlinux
+      image: ghcr.io/nokia/srlinux
+    srl2:
+      kind: nokia_srlinux
+      image: ghcr.io/nokia/srlinux
+  links:
+    - endpoints: ["srl1:e1-1", "srl2:e1-1"]

@@ -1,0 +1,21 @@
+# Ansible inventory for the Rung 1 lab.
+# SR Linux exposes a JSON-RPC management API; the nokia.srlinux collection drives it.
+#
+# One-time setup:
+#   ansible-galaxy collection install nokia.srlinux
+#   export SRL_PASSWORD='NokiaSrl1!'      # default SR Linux creds: admin / NokiaSrl1!
+#
+# ContainerLab adds /etc/hosts entries for the clab-<lab>-<node> names, so the
+# container name resolves as the ansible_host from the WSL host.
+all:
+  vars:
+    ansible_connection: ansible.netcommon.httpapi
+    ansible_network_os: nokia.srlinux.srlinux
+    ansible_user: admin
+    # Never hardcode the password. Pull it from the environment (or Ansible Vault).
+    ansible_password: "{{ lookup('env', 'SRL_PASSWORD') }}"
+    ansible_httpapi_use_ssl: true
+    ansible_httpapi_validate_certs: false
+  hosts:
+    srl1:
+      ansible_host: clab-rung1-deterministic-srl1
