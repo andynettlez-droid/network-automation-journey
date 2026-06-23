@@ -1,0 +1,23 @@
+<svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d" font-family="system-ui,-apple-system,sans-serif">
+  <title id="t">Networking vocabulary</title>
+  <desc id="d">Two virtual routers connected by a cable. Labels point to the router, an interface (port), and explain that an IP address is a device's house number. A note says the routers are emulated software.</desc>
+
+  <text x="350" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="var(--text,#1a1a1a)">The words, as a picture</text>
+
+  <rect x="80" y="150" width="170" height="90" rx="12" fill="var(--card,#eef2ff)" stroke="var(--accent,#4f46e5)" stroke-width="2"/>
+  <text x="165" y="202" text-anchor="middle" font-size="17" font-weight="700" fill="var(--text,#1a1a1a)">srl1</text>
+  <rect x="450" y="150" width="170" height="90" rx="12" fill="var(--card,#eef2ff)" stroke="var(--accent,#4f46e5)" stroke-width="2"/>
+  <text x="535" y="202" text-anchor="middle" font-size="17" font-weight="700" fill="var(--text,#1a1a1a)">srl2</text>
+
+  <line x1="250" y1="195" x2="450" y2="195" stroke="var(--text,#1a1a1a)" stroke-width="2"/>
+  <circle cx="250" cy="195" r="5" fill="var(--accent,#4f46e5)"/>
+  <circle cx="450" cy="195" r="5" fill="var(--accent,#4f46e5)"/>
+
+  <text x="165" y="132" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent,#4f46e5)">router = directs traffic</text>
+  <text x="350" y="172" text-anchor="middle" font-size="11" fill="var(--muted,#6b7280)">cable (a "link")</text>
+
+  <text x="250" y="262" text-anchor="middle" font-size="11" fill="var(--accent,#4f46e5)">interface (port) = where a cable plugs in</text>
+
+  <text x="350" y="322" text-anchor="middle" font-size="13" fill="var(--text,#1a1a1a)">An IP address (like 10.0.0.1) is a device's "house number" on the network.</text>
+  <text x="350" y="366" text-anchor="middle" font-size="12" fill="var(--muted,#6b7280)">These routers are emulated — software pretending to be real, running on your PC. Break them freely.</text>
+</svg>

@@ -1,0 +1,15 @@
+Welcome to Day Zero. If you have never touched networking before, this is exactly where you should start. By the end of these few minutes, the words you will hear all week will make sense. We are not typing anything today. We are just building a picture in your head.
+
+So, what is a network? At its simplest, a network is just computers and devices connected so they can talk to each other. When you send a message, it has to travel from one device to another, and something has to direct that traffic. That something is usually a router. Think of a router as a postal sorting office: messages arrive, and it decides where each one should go next.
+
+Every device has sockets where cables connect. We call those interfaces, or ports. Each port has a name, like ethernet one slash one. Picture the back of any home internet box: the little slots where cables plug in. Those are interfaces.
+
+Now, for any device to be reachable, it needs an address, so messages know where to find it. That is an IP address. It is just like a house number. When you hear an address with a slash and a number after it, like slash thirty, that slash number is simply telling you how big the local street of addresses is. A small number of houses, or a large one. For now, just know: the address identifies the device, and the slash number describes the size of its little neighbourhood.
+
+All the settings on a device, which ports are switched on, what addresses they carry, are together called its configuration, or config for short. And the config the device is actually using, right now, this second, is called its running config. When we make a change, we are changing that running config.
+
+Here is the part that makes this course safe and free. We are not going to buy real routers. We are going to use emulated ones: software that pretends to be a real router, running right on your own computer. Our launcher for those fake devices is called ContainerLab, and the router software running inside them is called SR Linux. If you make a mistake, you simply throw the virtual device away and start fresh. Nothing breaks, nothing costs money.
+
+And finally, the star of the course: Ansible. Ansible is the tool that will make configuration changes for us, automatically, from a simple file we write. Instead of logging into a device and typing commands by hand, we describe what we want, and Ansible makes it so.
+
+That is the whole vocabulary. Devices have ports, ports get addresses, the settings are the config, we practise on safe emulated devices, and Ansible does the work. Hold that picture, and Day One will feel easy. Let's begin.

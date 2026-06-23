@@ -1,0 +1,16 @@
+# Day 0 lab topology — the same two virtual routers, just to look around (no changes today).
+# Deploy from Linux-native disk (~/netlab), not /mnt/c.
+#   sudo containerlab deploy  -t topology.clab.yml
+#   sudo containerlab destroy -t topology.clab.yml
+name: day0-primer
+
+topology:
+  nodes:
+    srl1:
+      kind: nokia_srlinux
+      image: ghcr.io/nokia/srlinux
+    srl2:
+      kind: nokia_srlinux
+      image: ghcr.io/nokia/srlinux
+  links:
+    - endpoints: ["srl1:e1-1", "srl2:e1-1"]
