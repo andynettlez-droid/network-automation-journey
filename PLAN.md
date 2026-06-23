@@ -6,6 +6,9 @@ The live source of truth across sessions and both models. Agents read and update
 
 ## Status: Phase 0 — Foundation (in progress)
 
+### Toolchain state (detected 2026-06-23)
+WSL2 ✓ (v2.7.8) · default distro **Ubuntu 26.04 LTS** ✓ (python3, git present) · **Docker / ContainerLab / Ansible: not yet installed** in Ubuntu. The `ccna-ubuntu` distro belongs to the separate study project — off-limits.
+
 ## Locked decisions (do not relitigate)
 
 - Roles: me = architect/verifier, Opus = designer/reviewer, Codex = implementer (Opus covers implementer on Codex fallback). See `CONVENTIONS.md`.
@@ -14,10 +17,13 @@ The live source of truth across sessions and both models. Agents read and update
 
 ## Phase 0 checklist
 
-- [ ] Validate the toolchain: Docker + ContainerLab + Ansible installed; a throwaway 2-node topology deploys, is reachable, and tears down cleanly
 - [x] Repo structure scaffolded (README, PLAN, CONVENTIONS, AI-ACCELERATION, .gitignore, folders)
-- [ ] Push repo to GitHub as `network-automation-journey` (public)
-- [ ] Weekly review reminder active
+- [x] Phase 0 validation pack authored — `00-phase0-validation/` (topology + SETUP.md) and first Rung 1 spec (`specs/0001`)
+- [x] Local git initialized + first commit (`main`, f7fbee1)
+- [x] Weekly review reminder active
+- [ ] Install Docker + ContainerLab + Ansible inside Ubuntu (see `00-phase0-validation/SETUP.md`) — *your hands*
+- [ ] Deploy `topology.clab.yml`, confirm both nodes reachable via `sr_cli`, then `destroy` — **the Phase 0 gate**
+- [ ] Push repo to GitHub as `network-automation-journey` (public) — *needs your GitHub auth*
 
 ## The six rungs
 
@@ -32,8 +38,9 @@ The live source of truth across sessions and both models. Agents read and update
 
 _(append one line per verified increment: `[date] built X, ran it, result: ___, what I had to fix: ___`)_
 
-- [2026-06-23] Phase 0 repo scaffold created via Cowork. Verify: open files, confirm structure, push to GitHub.
+- [2026-06-23] Phase 0 repo scaffold created via Cowork.
+- [2026-06-23] Toolchain detected; validation pack + spec 0001 authored; git initialized (commit f7fbee1). Verify next: run SETUP.md, deploy the validation topology, reach a node's CLI, destroy.
 
 ## Next session starts here
 
-→ Stand up the toolchain: install Docker + ContainerLab + Ansible, deploy a throwaway 2-node SR Linux topology, confirm both nodes are up and reachable, then `destroy` it. Once the environment is proven, push the repo to GitHub and write the first `/specs/` increment for Rung 1.
+→ Install Docker + ContainerLab + Ansible inside the default Ubuntu distro (`00-phase0-validation/SETUP.md`), then deploy `topology.clab.yml`, reach `srl1` via `sr_cli`, and `destroy`. That clears the Phase 0 gate. Then create the GitHub repo and `git push -u origin main`. After that, Rung 1 begins from `specs/0001`.

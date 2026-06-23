@@ -1,0 +1,6 @@
+# Keep LF endings — these files run inside Linux (WSL/ContainerLab/Ansible).
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.mp3 binary
