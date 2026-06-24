@@ -7,7 +7,7 @@ $lecture = "C:\Users\andyn\Claude\Projects\ccna automation\course\day-01-idempot
 wsl -d Ubuntu -- bash -lc "test -d ~/netlab/day1-mine || (mkdir -p ~/netlab/day1-mine && cp -r '/mnt/c/Users/andyn/Claude/Projects/ccna automation/course/day-01-idempotency/lab/.' ~/netlab/day1-mine/)"
 
 # 2. Start the lesson server (powers Explain-diagram, the AI tutor, and voice), then open the player + narration.
-Start-Process wsl -WindowStyle Minimized -ArgumentList @('-d','Ubuntu','--','python3','/mnt/c/Users/andyn/Claude/Projects/ccna automation/tools/serve-lesson.py')
+Start-Process wsl -WindowStyle Minimized -ArgumentList @('-d','Ubuntu','--','bash','/home/andyn/.lesson-server.sh')
 Start-Sleep -Seconds 2
 Start-Process "http://localhost:8000/lesson.html"
 Start-Sleep -Seconds 1

@@ -202,4 +202,4 @@ class H(http.server.SimpleHTTPRequestHandler):
 if __name__ == "__main__":
     print(f"Lesson server running -> http://localhost:{PORT}/lesson.html   (Ctrl+C to stop)")
     print(f"  AI key: {'loaded' if KEY else 'MISSING (add ANTHROPIC_API_KEY to .env)'}")
-    http.server.HTTPServer(("127.0.0.1", PORT), H).serve_forever()
+    http.server.HTTPServer(("0.0.0.0", PORT), H).serve_forever()
