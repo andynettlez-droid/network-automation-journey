@@ -18,6 +18,7 @@ import json
 import http.server
 import urllib.request
 import urllib.error
+import subprocess
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
@@ -47,6 +48,72 @@ def claude(system, user, max_tokens=400):
     with urllib.request.urlopen(req, timeout=60) as r:
         data = json.load(r)
     return "".join(b.get("text", "") for b in data.get("content", [])).strip()
+
+
+# --- Agentic (tool-using) tutor -------------------------------------------------
+LAB = "/home/andyn/netlab/day1-mine"
+
+TUTOR_AGENT_SYS = (
+    "You are a kind, Socratic tutor for an absolute-beginner network-automation course, Day 1: the student "
+    "must write an IDEMPOTENT Ansible task (nokia.srlinux.config with an 'update:' list) that sets 10.0.0.1/30 "
+    "on ethernet-1/1 of a Nokia SR Linux device. You have tools to read their playbook, run the grader, and "
+    "inspect the device. USE the tools to find the REAL problem before answering. Then give ONE short, specific "
+    "nudge based on what you actually found (name the real issue, e.g. 'your task has no ipv4 block'), ask a "
+    "guiding question, and encourage. NEVER paste the full solution or more than a tiny one-line snippet."
+)
+
+TOOLS = [
+    {"name": "read_playbook", "description": "Read the student's current configure-interface.yml.",
+     "input_schema": {"type": "object", "properties": {}}},
+    {"name": "run_grader", "description": "Run the lab grader (check.sh) and return its output.",
+     "input_schema": {"type": "object", "properties": {}}},
+    {"name": "inspect_interface", "description": "Show the live state of ethernet-1/1 on device srl1.",
+     "input_schema": {"type": "object", "properties": {}}},
+]
+
+
+def _run_tool(name):
+    try:
+        if name == "read_playbook":
+            return open(os.path.join(LAB, "configure-interface.yml"), encoding="utf-8").read()[:4000]
+        if name == "run_grader":
+            r = subprocess.run(["bash", "check.sh"], cwd=LAB, capture_output=True, text=True, timeout=120)
+            return (r.stdout + r.stderr)[-3000:]
+        if name == "inspect_interface":
+            cmd = ("docker exec clab-day1-idempotency-srl1 sr_cli 'show interface ethernet-1/1' 2>/dev/null "
+                   "|| sudo docker exec clab-day1-idempotency-srl1 sr_cli 'show interface ethernet-1/1'")
+            r = subprocess.run(["bash", "-lc", cmd], capture_output=True, text=True, timeout=45)
+            return (r.stdout or r.stderr)[-3000:]
+    except Exception as e:
+        return f"(tool error: {e})"
+    return "(unknown tool)"
+
+
+def _messages(system, messages, tools=None, max_tokens=600):
+    payload = {"model": MODEL, "max_tokens": max_tokens, "system": system, "messages": messages}
+    if tools:
+        payload["tools"] = tools
+    req = urllib.request.Request(API, data=json.dumps(payload).encode(), method="POST", headers={
+        "x-api-key": KEY, "anthropic-version": "2023-06-01", "content-type": "application/json"})
+    with urllib.request.urlopen(req, timeout=90) as r:
+        return json.load(r)
+
+
+def claude_agent(question, max_turns=5):
+    messages = [{"role": "user", "content": question}]
+    for _ in range(max_turns):
+        resp = _messages(TUTOR_AGENT_SYS, messages, tools=TOOLS)
+        if resp.get("stop_reason") == "tool_use":
+            messages.append({"role": "assistant", "content": resp["content"]})
+            results = []
+            for block in resp.get("content", []):
+                if block.get("type") == "tool_use":
+                    results.append({"type": "tool_result", "tool_use_id": block["id"],
+                                    "content": _run_tool(block["name"])})
+            messages.append({"role": "user", "content": results})
+        else:
+            return "".join(b.get("text", "") for b in resp.get("content", []) if b.get("type") == "text").strip()
+    return "(tutor hit its step limit - try asking again)"
 
 
 EXPLAIN_SYS = (
@@ -81,8 +148,7 @@ class H(http.server.SimpleHTTPRequestHandler):
             elif self.path == "/api/explain":
                 out = claude(EXPLAIN_SYS, "Explain this diagram to a beginner:\n" + p.get("svg", ""))
             elif self.path == "/api/tutor":
-                out = claude(TUTOR_SYS, f"I'm stuck on: {p.get('q', '(general nudge)')}\n\n"
-                                        f"My configure-interface.yml:\n{p.get('playbook', '(none)')}")
+                out = claude_agent(f"I'm stuck on: {p.get('q', '(general nudge - look at my work)')}")
             else:
                 self.send_error(404)
                 return
