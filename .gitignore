@@ -25,6 +25,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .ruff_cache/
+tools/_test_*
 
 # --- Node / React (lesson-player) ---
 node_modules/
