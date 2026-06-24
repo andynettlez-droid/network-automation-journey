@@ -13,7 +13,7 @@
 #            ansible-playbook -i inventory.yml verify-connectivity.yml
 #  STEP 4  Write your task BELOW (replace the TODO). You want a
 #            nokia.srlinux.config  task with an  update:  that DECLARES
-#            the address. Stuck? Open HINTS.md (reveals it in tiers).
+#            the address. Stuck? Open HINTS.md, or ask the AI tutor:  bash tutor.sh
 #  STEP 5  Run it TWICE and watch  changed=1  then  changed=0:
 #            ansible-playbook -i inventory.yml configure-interface.yml
 #            ansible-playbook -i inventory.yml configure-interface.yml

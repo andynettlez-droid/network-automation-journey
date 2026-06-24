@@ -2,6 +2,8 @@
 
 Each hint reveals a little more. The full answer lives in `solution/`.
 
+**Prefer to be asked questions back?** Run `bash tutor.sh` — an AI tutor that sees your file and nudges you toward the answer (it won't just hand it over).
+
 ## Hint 1 — which module?
 You want a module that *declares state*, not one that runs commands. On SR Linux that's `nokia.srlinux.config` with an `update:` list. Each item has a `path` (where in the config) and a `value` (what it should be).
 

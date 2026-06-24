@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 1 — AI Tutor</title>
+<style>
+  :root{ color-scheme: light }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f5f6fa;color:#1c1e2a;line-height:1.55}
+  .wrap{max-width:760px;margin:0 auto;padding:26px 20px 48px}
+  h1{font-size:23px;margin:0 0 4px}
+  .sub{color:#5b6478;margin:0 0 22px;font-size:14px}
+  .card{background:#fff;border:1px solid #e3e6ef;border-radius:12px;padding:18px 20px;margin-bottom:16px}
+  label{display:block;font-size:13px;font-weight:600;color:#3a4256;margin:0 0 6px}
+  textarea{width:100%;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;border:1px solid #d4d8e3;border-radius:8px;padding:9px 11px;background:#fbfbfe;color:#1c1e2a;resize:vertical}
+  #pb{min-height:120px}
+  #q{min-height:56px;font-family:system-ui,sans-serif;font-size:14px}
+  .row{margin-bottom:14px}
+  button#go{font:inherit;font-weight:600;border:0;background:#4f46e5;color:#fff;border-radius:9px;padding:10px 22px;cursor:pointer}
+  button#go:disabled{opacity:.5;cursor:default}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0}
+  .chip{font-size:12px;background:#eef0fb;color:#4f46e5;border:0;border-radius:999px;padding:5px 12px;cursor:pointer}
+  .out{white-space:pre-wrap;background:#f0f3ff;border:1px solid #d9def8;border-radius:10px;padding:14px 16px;color:#23263a;margin-top:14px;display:none}
+  .out.show{display:block}
+  .note{font-size:12px;color:#828aa0;margin-top:6px}
+</style></head>
+<body><div class="wrap">
+  <h1>Day 1 &mdash; AI Tutor</h1>
+  <p class="sub">Stuck on the lab? Tell me what's going on and I'll give you a <b>nudge</b> &mdash; never the full answer. The struggle is where the learning happens.</p>
+
+  <div class="card">
+    <div class="row">
+      <label for="q">What are you stuck on? (paste any error message too)</label>
+      <textarea id="q" placeholder="e.g. I get 'changed=1' on the second run and I don't know why"></textarea>
+      <div class="chips">
+        <button class="chip" onclick="quick('My second run still says changed=1 - why is it not idempotent?')">2nd run still changes</button>
+        <button class="chip" onclick="quick('I get an authentication / 401 error when I run the playbook')">auth / 401 error</button>
+        <button class="chip" onclick="quick('I do not know which module or path to use to set the IP')">which module/path?</button>
+        <button class="chip" onclick="quick('My YAML gives an indentation or syntax error')">YAML error</button>
+      </div>
+    </div>
+    <div class="row">
+      <label for="pb">Your configure-interface.yml (optional &mdash; paste it so I can look)</label>
+      <textarea id="pb" placeholder="paste the contents of your playbook here..."></textarea>
+    </div>
+    <button id="go" onclick="ask()">Ask the tutor</button>
+    <p class="note">Hints only. The full solution lives in <code>solution/</code> &mdash; but try the nudge first.</p>
+    <div id="out" class="out"></div>
+  </div>
+</div>
+
+<script>
+function quick(t){ document.getElementById('q').value = t; ask(); }
+
+async function ask(){
+  const q  = document.getElementById('q').value.trim();
+  const pb = document.getElementById('pb').value.trim();
+  if(!q && !pb){ return; }
+  const btn = document.getElementById('go');
+  const out = document.getElementById('out');
+  btn.disabled = true; btn.textContent = 'Thinking…';
+  out.className = 'out show'; out.textContent = '…';
+
+  const instruction =
+    "You are a kind, Socratic tutor for an absolute-beginner network-automation course. " +
+    "The student is on Day 1: writing an IDEMPOTENT Ansible task (module nokia.srlinux.config " +
+    "with an 'update:' list) that sets the IPv4 address 10.0.0.1/30 on interface ethernet-1/1 of " +
+    "a Nokia SR Linux device, so that running it twice changes nothing the second time. " +
+    "RULES: give ONE short, targeted nudge toward the student's next step (2-4 sentences). " +
+    "Point at the specific concept, line, or error; ask a guiding question when useful. " +
+    "NEVER paste the full solution or a complete working task, and never write more than a tiny " +
+    "one-line snippet even if asked. Be warm and encouraging; do not lecture.\n\n" +
+    "The student is stuck on: " + (q || "(not sure - give a general nudge)") + "\n\n" +
+    "Their current configure-interface.yml is provided as data (it may be empty or the starter stub).";
+
+  try{
+    const r = await window.cowork.askClaude(instruction, [pb || "(no playbook pasted)"]);
+    let text = (typeof r === "string") ? r
+             : (r && (r.text || r.content || r.message)) ? (r.text || r.content || r.message)
+             : JSON.stringify(r);
+    out.textContent = text;
+  }catch(e){
+    out.textContent = "Tutor error: " + ((e && e.message) || e);
+  }
+  btn.disabled = false; btn.textContent = "Ask the tutor";
+}
+</script>
+</body></html>
