@@ -6,8 +6,10 @@ $lecture = "C:\Users\andyn\Claude\Projects\ccna automation\course\day-01-idempot
 # 1. Make sure your lab folder exists in WSL (won't overwrite work you've already started).
 wsl -d Ubuntu -- bash -lc "test -d ~/netlab/day1-mine || (mkdir -p ~/netlab/day1-mine && cp -r '/mnt/c/Users/andyn/Claude/Projects/ccna automation/course/day-01-idempotency/lab/.' ~/netlab/day1-mine/)"
 
-# 2. Open the lesson player, then start the narration.
-Start-Process "$lecture\lesson.html"
+# 2. Start the lesson server (powers Explain-diagram, the AI tutor, and voice), then open the player + narration.
+Start-Process wsl -WindowStyle Minimized -ArgumentList @('-d','Ubuntu','--','python3','/mnt/c/Users/andyn/Claude/Projects/ccna automation/tools/serve-lesson.py')
+Start-Sleep -Seconds 2
+Start-Process "http://localhost:8000/lesson.html"
 Start-Sleep -Seconds 1
 Start-Process "$lecture\lecture.mp3"
 

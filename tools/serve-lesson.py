@@ -29,15 +29,36 @@ API = "https://api.anthropic.com/v1/messages"
 MODEL = os.environ.get("ANTHROPIC_MODEL", "claude-haiku-4-5-20251001")
 
 
-def _key():
+def env(k):
     if os.path.exists(ENV):
         for line in open(ENV, encoding="utf-8"):
-            if line.startswith("ANTHROPIC_API_KEY="):
+            if line.startswith(k + "="):
                 return line.split("=", 1)[1].strip().strip('"').strip("'")
-    return os.environ.get("ANTHROPIC_API_KEY", "")
+    return os.environ.get(k, "")
 
 
-KEY = _key()
+KEY = env("ANTHROPIC_API_KEY")
+
+
+def elevenlabs_tts(text):
+    """Speak text in the course voice (Daniel) via ElevenLabs. Returns mp3 bytes or None."""
+    k = env("ELEVENLABS_API_KEY"); vid = env("ELEVEN_VOICE_ID")
+    if not k or not vid or not text:
+        return None
+    try:
+        speed = float(env("ELEVEN_SPEED") or "1.0")
+    except Exception:
+        speed = 1.0
+    body = json.dumps({"text": text, "model_id": "eleven_multilingual_v2",
+                       "voice_settings": {"stability": 0.5, "similarity_boost": 0.75, "speed": speed}}).encode()
+    req = urllib.request.Request(f"https://api.elevenlabs.io/v1/text-to-speech/{vid}",
+                                 data=body, method="POST",
+                                 headers={"xi-api-key": k, "content-type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            return r.read()
+    except Exception:
+        return None
 
 
 def claude(system, user, max_tokens=400):
@@ -142,6 +163,17 @@ class H(http.server.SimpleHTTPRequestHandler):
             p = json.loads(self.rfile.read(n) or b"{}")
         except Exception:
             p = {}
+        if self.path == "/api/speak":
+            audio = elevenlabs_tts(p.get("text", ""))
+            if audio:
+                self.send_response(200)
+                self.send_header("content-type", "audio/mpeg")
+                self.send_header("content-length", str(len(audio)))
+                self.end_headers()
+                self.wfile.write(audio)
+            else:
+                self._json({"text": "(voice unavailable - check ELEVENLABS_API_KEY / ELEVEN_VOICE_ID in .env)"})
+            return
         try:
             if not KEY:
                 out = "No ANTHROPIC_API_KEY found in .env — the AI features can't run."
