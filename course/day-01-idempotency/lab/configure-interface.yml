@@ -1,21 +1,35 @@
+# =====================================================================
+#  DAY 1 LAB  —  Your turn. The whole lesson is right here in this file.
+# =====================================================================
+#
+#  GOAL: give srl1's port (ethernet-1/1) the address 10.0.0.1/30, so that
+#        running this file TWICE changes nothing the second time.
+#
+#  STEP 1  Open a terminal:  Terminal menu (top)  ->  New Terminal.
+#  STEP 2  Boot the lab + set the device password (paste into terminal):
+#            sudo containerlab deploy -t topology.clab.yml
+#            export SRL_PASSWORD='NokiaSrl1!'
+#  STEP 3  Confirm you can reach the device:
+#            ansible-playbook -i inventory.yml verify-connectivity.yml
+#  STEP 4  Write your task BELOW (replace the TODO). You want a
+#            nokia.srlinux.config  task with an  update:  that DECLARES
+#            the address. Stuck? Open HINTS.md (reveals it in tiers).
+#  STEP 5  Run it TWICE and watch  changed=1  then  changed=0:
+#            ansible-playbook -i inventory.yml configure-interface.yml
+#            ansible-playbook -i inventory.yml configure-interface.yml
+#  STEP 6  Grade yourself:   bash check.sh
+# =====================================================================
 ---
-# Day 1 lab — YOU write the config task.
-#
-# Declare an IPv4 address on ethernet-1/1 so that running this playbook a SECOND
-# time makes NO change. Use a state-declaring module (nokia.srlinux.config with an
-# `update:` block), not a raw command push.
-#
-# Run #1 should report "changed"; run #2 should report "ok" / no change.
-# Stuck? The answer is in solution/ — but attempt it first; the struggle is the lesson.
-#
-#   ansible-playbook -i inventory.yml configure-interface.yml   # run 1
-#   ansible-playbook -i inventory.yml configure-interface.yml   # run 2
-- name: "Day 1 — idempotent interface config on srl1"
+- name: "Day 1 - idempotent interface config on srl1"
   hosts: srl1
   gather_facts: false
   tasks:
-    - name: "TODO: declare ethernet-1/1 IPv4 state here"
+
+    # vvv  WRITE YOUR TASK HERE (replace this debug task)  vvv
+    - name: "TODO: declare ethernet-1/1 with IP 10.0.0.1/30"
       ansible.builtin.debug:
-        msg: "Replace me with an idempotent nokia.srlinux.config task."
+        msg: "Replace me with a nokia.srlinux.config task (see HINTS.md)."
+    # ^^^  -----------------------------------------------  ^^^
+
     # Verify on the device, not this recap:
     #   docker exec -it clab-day1-idempotency-srl1 sr_cli "show interface ethernet-1/1"

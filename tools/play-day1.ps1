@@ -11,7 +11,7 @@ Start-Process "$lecture\lesson.html"
 Start-Sleep -Seconds 1
 Start-Process "$lecture\lecture.mp3"
 
-# 3. Open VS Code on your lab folder (inside WSL, where the lab runs).
-wsl -d Ubuntu -- bash -lic "cd ~/netlab/day1-mine && setsid code . >/dev/null 2>&1 </dev/null &"
+# 3. Open VS Code on your lab folder, landing on the guided playbook (not the Welcome tab).
+wsl -d Ubuntu -- bash -lic "cd ~/netlab/day1-mine && setsid code . configure-interface.yml >/dev/null 2>&1 </dev/null &"
 
 Write-Host "Day 1 launched: lesson player + narration + VS Code on your lab."
