@@ -27,6 +27,7 @@
   .result{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#0c0e1a;border:1px solid #262a40;border-radius:8px;padding:12px 14px;white-space:pre-wrap;color:#c7cdda;min-height:48px}
   .hl{background:#15351f;color:#7ee2a8;font-weight:700;padding:1px 6px;border-radius:5px}
   .hl.red{background:#3a1d22;color:#ff9aa6}
+  .hl.act{background:#3a2f12;color:#ffcf70}
   .badge{display:inline-block;margin-top:10px;font-size:13px;color:#cdd3e0;background:#1f2440;border-radius:8px;padding:6px 12px}
   .nav{display:flex;gap:10px;margin-top:16px}
   button{font:inherit;font-weight:600;border:1px solid #2f3550;background:#1d2238;color:#e8eaf2;border-radius:9px;padding:9px 18px;cursor:pointer}
@@ -142,10 +143,9 @@ let i = 0;
 const dotsEl = document.getElementById('dots');
 steps.forEach((_,k)=>{const d=document.createElement('div');d.className='dot';dotsEl.appendChild(d);});
 function fmt(s){
-  const red = s.indexOf('changed=0')>-1 ? false : false;
   return s.replace(/\{\{(.*?)\}\}/g, (m,p1)=>{
-     const cls = p1.indexOf('changed=0')>-1 ? 'hl' : 'hl';
-     return '<span class="'+cls+'">'+p1+'</span>';
+     const act = /changed=1/.test(p1);   // run 1 "it acted" = amber; everything else (changed=0, the IP) = green
+     return '<span class="hl'+(act?' act':'')+'">'+p1+'</span>';
   });
 }
 function render(){
