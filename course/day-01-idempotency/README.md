@@ -29,9 +29,9 @@ The instructor will: boot the two routers → apply the address with one Ansible
 Open [`lab/README.md`](lab/README.md). The config task is left as a `TODO` — **you** write it. Try before peeking at `lab/solution/`.
 
 ## 4. Verify — ground truth
-Always check the device itself:
+Always check the device itself (`sr_cli` only exists *inside* the container, so go in via `docker exec`):
 ```
-sr_cli "show interface ethernet-1/1"
+docker exec -it clab-day1-idempotency-srl1 sr_cli "show interface ethernet-1/1"
 ```
 
 ## Recap

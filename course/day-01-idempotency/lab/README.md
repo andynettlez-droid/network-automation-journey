@@ -52,10 +52,23 @@
    sudo containerlab destroy -t topology.clab.yml
    ```
 
+## Before you start
+Run `bash preflight.sh` — it checks Docker, ContainerLab, Ansible, the collection, and that you're on Linux-native disk *before* you hit a cryptic failure. Keep `CHEATSHEET.md` open for the command list.
+
+## When it breaks (troubleshooting)
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| `Cannot connect to the Docker daemon` | Docker not started | `sudo service docker start` |
+| `couldn't resolve module 'nokia.srlinux.config'` | collection not installed | `ansible-galaxy collection install nokia.srlinux` |
+| auth / `401` / `unreachable` on the device | `SRL_PASSWORD` not set in this terminal | `export SRL_PASSWORD='NokiaSrl1!'` (re-run it in every new terminal) |
+| `sr_cli: command not found` | `sr_cli` only lives inside the container | prefix with `docker exec -it clab-day1-idempotency-srl1 sr_cli ...` |
+| config commit / `Operation not permitted` | running from `/mnt/c` (Windows drive) | copy the lab to `~/netlab` and run it there |
+| `No such container` | lab not deployed, or wrong name | `sudo containerlab deploy -t topology.clab.yml`; the name is `clab-day1-idempotency-srl1` |
+
 ## If you get stuck / check your work
-- **Stuck?** Open `HINTS.md` — it reveals the answer a little at a time, with the full solution in `solution/` only at the end.
-- **Check yourself:** after your second run reports no change, run `bash check.sh`. It grades idempotency *and* confirms the device really has the address, printing `[PASS]`/`[FAIL]`.
-- **Editing:** open this folder in VS Code (the Ansible extension flags YAML mistakes as you type). Keep the lesson page open beside it for the instructions.
+- **Stuck?** Open `HINTS.md` — it reveals the answer a little at a time, full solution in `solution/` last.
+- **Check yourself:** after your second run reports no change, run `bash check.sh`.
+- **Editing:** the Ansible extension in VS Code flags YAML mistakes as you type. Keep the lesson page open beside it.
 
 ## Done when
 `bash check.sh` shows all checks passed, you've seen drift get auto-corrected, and you can explain *why* re-running changed nothing.

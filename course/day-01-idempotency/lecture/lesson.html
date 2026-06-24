@@ -35,6 +35,11 @@
   button.primary{background:#5b6cff;border-color:#5b6cff;color:#fff}
   .turn{color:#9aa3b2;font-size:14px}
   .turn b{color:#e8eaf2}
+  .quiz .q{margin:0 0 16px}
+  .quiz .q p{margin:0 0 8px;color:#d7dce8}
+  .quiz code{background:#0c0e1a;padding:1px 6px;border-radius:4px;color:#9aa3b2;font-family:ui-monospace,monospace}
+  .quiz button{padding:6px 14px;font-size:13px}
+  .quiz .ans{color:#7ee2a8;font-size:14px;margin-left:8px}
   @media (max-width:720px){.concepts{grid-template-columns:1fr}}
 </style></head>
 <body><div class="wrap">
@@ -84,6 +89,22 @@
     </div>
   </div>
 
+  <div class="card quiz">
+    <h2>&#10003; Quick recap &mdash; check yourself</h2>
+    <div class="q" data-a="Yes - re-running changed nothing, which is exactly what idempotent means.">
+      <p><b>1.</b> Run 1 said <code>changed=1</code>, run 2 said <code>changed=0</code>. Is your automation idempotent?</p>
+      <button onclick="reveal(this)">Show answer</button><span class="ans"></span>
+    </div>
+    <div class="q" data-a="The device. The tool's report is a claim; the device is the proof.">
+      <p><b>2.</b> The tool says &ldquo;success&rdquo; but the device disagrees. Which do you trust?</p>
+      <button onclick="reveal(this)">Show answer</button><span class="ans"></span>
+    </div>
+    <div class="q" data-a="Declarative - you state the desired end state, so the tool only acts if reality differs. Imperative re-applies blindly.">
+      <p><b>3.</b> Which style is safe to re-run &mdash; declarative or imperative? Why?</p>
+      <button onclick="reveal(this)">Show answer</button><span class="ans"></span>
+    </div>
+  </div>
+
   <div class="card">
     <p class="turn"><b>Now your turn (the lab).</b> Boot a fresh lab, write the config task yourself, run it twice, and verify on the device &mdash; the terminal is fine for that, one command at a time. See <code>lab/README.md</code>.</p>
   </div>
@@ -108,7 +129,7 @@ const steps = [
     badge: "changed=0 → nothing changed. THAT is idempotency." },
   { title: "Ask the device itself",
     explain: "Don’t trust the tool’s report — ask the real device. We log in and look at the port. The address we declared is really there.",
-    cmd: "sr_cli \"show interface ethernet-1/1\"",
+    cmd: "docker exec -it clab-day1-idempotency-srl1 sr_cli \"show interface ethernet-1/1\"",
     result: "ethernet-1/1.0 is up\n   IPv4 addr : {{10.0.0.1/30}} (static)",
     badge: "Claim verified against truth. This is the core habit." },
   { title: "Tear it down",
@@ -140,6 +161,7 @@ function render(){
   document.querySelectorAll('.dot').forEach((d,k)=>d.classList.toggle('on',k<=i));
 }
 function go(n){ i=Math.max(0,Math.min(steps.length-1,i+n)); render(); }
+function reveal(b){ const q=b.closest('.q'); q.querySelector('.ans').textContent=q.dataset.a; b.disabled=true; b.textContent='Answer:'; }
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
 render();
 </script>
