@@ -52,5 +52,10 @@
    sudo containerlab destroy -t topology.clab.yml
    ```
 
+## If you get stuck / check your work
+- **Stuck?** Open `HINTS.md` — it reveals the answer a little at a time, with the full solution in `solution/` only at the end.
+- **Check yourself:** after your second run reports no change, run `bash check.sh`. It grades idempotency *and* confirms the device really has the address, printing `[PASS]`/`[FAIL]`.
+- **Editing:** open this folder in VS Code (the Ansible extension flags YAML mistakes as you type). Keep the lesson page open beside it for the instructions.
+
 ## Done when
-The second run reports no change, the device shows `10.0.0.1/30` on `ethernet-1/1`, you've seen drift get auto-corrected, and you can explain *why* re-running changed nothing.
+`bash check.sh` shows all checks passed, you've seen drift get auto-corrected, and you can explain *why* re-running changed nothing.

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 1 — Idempotency</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#0f1220;color:#e8eaf2;line-height:1.5}
+  .wrap{max-width:1000px;margin:0 auto;padding:36px 24px 60px}
+  h1{font-size:30px;margin:0 0 4px}
+  .sub{color:#9aa3b2;margin:0 0 28px;font-size:16px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .card{background:#171a2b;border:1px solid #262a40;border-radius:14px;padding:22px 24px}
+  .card.full{grid-column:1 / -1}
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:#8ea0ff;margin:0 0 14px}
+  .concept{margin:0 0 16px}
+  .concept:last-child{margin-bottom:0}
+  .concept b{font-size:17px;color:#fff}
+  .concept span{display:block;color:#b9c0d0;font-size:14px;margin-top:3px}
+  ol{margin:0;padding-left:22px}
+  li{margin:8px 0;color:#c7cdda}
+  .pill{display:inline-block;background:#1f2440;color:#8ea0ff;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:600}
+  .diagram{background:#fff;border-radius:10px;padding:6px}
+  .diagram svg{display:block;width:100%;height:auto}
+  @media (max-width:760px){.grid{grid-template-columns:1fr}}
+</style></head>
+<body><div class="wrap">
+  <h1>Day 1 &mdash; Idempotency</h1>
+  <p class="sub">Give a router&rsquo;s port an address with automation &mdash; and make re-running change nothing.</p>
+
+  <div class="grid">
+    <div class="card full diagram">
+      <svg viewBox="0 0 700 300" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+        <text x="350" y="34" text-anchor="middle" font-size="18" font-weight="700" fill="#1a1a1a">Two routers, one cable</text>
+        <rect x="80" y="110" width="170" height="84" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+        <text x="165" y="150" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">srl1</text>
+        <text x="165" y="172" text-anchor="middle" font-size="12" fill="#6b7280">virtual router</text>
+        <rect x="450" y="110" width="170" height="84" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+        <text x="535" y="150" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">srl2</text>
+        <text x="535" y="172" text-anchor="middle" font-size="12" fill="#6b7280">virtual router</text>
+        <line x1="250" y1="152" x2="450" y2="152" stroke="#1a1a1a" stroke-width="2"/>
+        <circle cx="250" cy="152" r="4" fill="#4f46e5"/><circle cx="450" cy="152" r="4" fill="#4f46e5"/>
+        <text x="270" y="182" font-size="11" fill="#6b7280">ethernet-1/1</text>
+        <text x="430" y="182" text-anchor="end" font-size="11" fill="#6b7280">ethernet-1/1</text>
+        <rect x="80" y="224" width="170" height="32" rx="8" fill="none" stroke="#4f46e5" stroke-dasharray="5 3"/>
+        <text x="165" y="245" text-anchor="middle" font-size="14" font-weight="700" fill="#4f46e5">IP: 10.0.0.1 / 30</text>
+        <line x1="165" y1="194" x2="165" y2="224" stroke="#4f46e5" stroke-width="1.5"/>
+      </svg>
+    </div>
+
+    <div class="card">
+      <h2>&#9733; Concepts to remember</h2>
+      <div class="concept"><b>Idempotency</b><span>Declare the state you want. Re-running changes nothing once the device already matches &mdash; safe to run a thousand times.</span></div>
+      <div class="concept"><b>Declarative &gt; imperative</b><span>State what <i>should be true</i> (&ldquo;this port has this address&rdquo;), not step-by-step commands. That is what makes it idempotent.</span></div>
+      <div class="concept"><b>Ground truth</b><span>The tool&rsquo;s &ldquo;success&rdquo; is a claim. The device is the proof. Always verify on the device.</span></div>
+    </div>
+
+    <div class="card">
+      <h2>Glossary</h2>
+      <div class="concept"><b>Interface</b><span>A port on a device (e.g. ethernet-1/1) &mdash; where a cable plugs in.</span></div>
+      <div class="concept"><b>IP address &middot; /30</b><span>A device&rsquo;s &ldquo;house number&rdquo; (10.0.0.1) on a tiny 2-host network.</span></div>
+      <div class="concept"><b>Playbook</b><span>The file telling Ansible what should be true. The inventory says which device.</span></div>
+    </div>
+
+    <div class="card full">
+      <h2>What you&rsquo;ll watch (demonstration)</h2>
+      <ol>
+        <li>Boot two virtual routers from a file.</li>
+        <li>Apply the address with Ansible &rarr; <span class="pill">changed = 1</span> (it made the change)</li>
+        <li>Run the <i>same</i> thing again &rarr; <span class="pill">changed = 0</span> &mdash; this flip <b>is</b> idempotency</li>
+        <li>Ask the device (<code>show interface</code>) &rarr; it really shows 10.0.0.1/30 (proof)</li>
+        <li>Tear it down &mdash; experiments are free.</li>
+      </ol>
+    </div>
+  </div>
+</div></body></html>

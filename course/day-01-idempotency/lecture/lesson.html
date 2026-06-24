@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 1 — Idempotency</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#0f1220;color:#e8eaf2;line-height:1.55}
+  .wrap{max-width:920px;margin:0 auto;padding:36px 24px 64px}
+  h1{font-size:30px;margin:0 0 4px}
+  .sub{color:#9aa3b2;margin:0 0 26px;font-size:16px}
+  .card{background:#171a2b;border:1px solid #262a40;border-radius:14px;padding:22px 24px;margin-bottom:20px}
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:#8ea0ff;margin:0 0 14px}
+  .concepts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  .concept b{display:block;color:#fff;font-size:15px;margin-bottom:3px}
+  .concept span{color:#b9c0d0;font-size:13px}
+  .diagram{background:#fff;border-radius:10px;padding:8px}
+  .diagram svg{display:block;width:100%;height:auto}
+  /* stepper */
+  .demo .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .steplabel{color:#8ea0ff;font-size:13px;font-weight:600;letter-spacing:.05em}
+  .dots{display:flex;gap:6px}
+  .dot{width:9px;height:9px;border-radius:50%;background:#2a2f4a}
+  .dot.on{background:#6c7dff}
+  .steptitle{font-size:20px;font-weight:700;color:#fff;margin:2px 0 8px}
+  .explain{color:#c7cdda;font-size:15px;margin:0 0 14px}
+  .cmd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;color:#9aa3b2;background:#0c0e1a;border:1px solid #262a40;border-radius:8px;padding:8px 12px;margin-bottom:12px;overflow-x:auto}
+  .cmd::before{content:"$ ";color:#5b6c8a}
+  .result{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#0c0e1a;border:1px solid #262a40;border-radius:8px;padding:12px 14px;white-space:pre-wrap;color:#c7cdda;min-height:48px}
+  .hl{background:#15351f;color:#7ee2a8;font-weight:700;padding:1px 6px;border-radius:5px}
+  .hl.red{background:#3a1d22;color:#ff9aa6}
+  .badge{display:inline-block;margin-top:10px;font-size:13px;color:#cdd3e0;background:#1f2440;border-radius:8px;padding:6px 12px}
+  .nav{display:flex;gap:10px;margin-top:16px}
+  button{font:inherit;font-weight:600;border:1px solid #2f3550;background:#1d2238;color:#e8eaf2;border-radius:9px;padding:9px 18px;cursor:pointer}
+  button:hover{background:#262c47}
+  button:disabled{opacity:.4;cursor:default}
+  button.primary{background:#5b6cff;border-color:#5b6cff;color:#fff}
+  .turn{color:#9aa3b2;font-size:14px}
+  .turn b{color:#e8eaf2}
+  @media (max-width:720px){.concepts{grid-template-columns:1fr}}
+</style></head>
+<body><div class="wrap">
+  <h1>Day 1 &mdash; Idempotency</h1>
+  <p class="sub">Give a router&rsquo;s port an address with automation &mdash; and make re-running change nothing.</p>
+
+  <div class="card">
+    <h2>&#9733; Concepts to remember</h2>
+    <div class="concepts">
+      <div class="concept"><b>Idempotency</b><span>Declare the state you want. Re-running changes nothing once the device matches.</span></div>
+      <div class="concept"><b>Declarative &gt; imperative</b><span>State what <i>should be true</i>, not step-by-step commands. That&rsquo;s what makes it idempotent.</span></div>
+      <div class="concept"><b>Ground truth</b><span>&ldquo;Success&rdquo; is a claim; the device is the proof. Always verify on the device.</span></div>
+    </div>
+  </div>
+
+  <div class="card diagram">
+    <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" font-family="system-ui,sans-serif">
+      <text x="350" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#1a1a1a">Two routers, one cable</text>
+      <rect x="90" y="92" width="160" height="78" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+      <text x="170" y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a1a">srl1</text>
+      <text x="170" y="149" text-anchor="middle" font-size="11" fill="#6b7280">virtual router</text>
+      <rect x="450" y="92" width="160" height="78" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="2"/>
+      <text x="530" y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a1a">srl2</text>
+      <text x="530" y="149" text-anchor="middle" font-size="11" fill="#6b7280">virtual router</text>
+      <line x1="250" y1="131" x2="450" y2="131" stroke="#1a1a1a" stroke-width="2"/>
+      <circle cx="250" cy="131" r="4" fill="#4f46e5"/><circle cx="450" cy="131" r="4" fill="#4f46e5"/>
+      <text x="262" y="124" font-size="10" fill="#6b7280">ethernet-1/1</text>
+      <rect x="90" y="196" width="160" height="30" rx="8" fill="none" stroke="#4f46e5" stroke-dasharray="5 3"/>
+      <text x="170" y="216" text-anchor="middle" font-size="13" font-weight="700" fill="#4f46e5">IP: 10.0.0.1 / 30</text>
+      <line x1="170" y1="170" x2="170" y2="196" stroke="#4f46e5" stroke-width="1.5"/>
+    </svg>
+  </div>
+
+  <div class="card demo">
+    <div class="top">
+      <span class="steplabel">DEMONSTRATION &mdash; <span id="stepnum">1</span> / 5</span>
+      <div class="dots" id="dots"></div>
+    </div>
+    <div class="steptitle" id="title"></div>
+    <p class="explain" id="explain"></p>
+    <div class="cmd" id="cmd"></div>
+    <div class="result" id="result"></div>
+    <div id="badge"></div>
+    <div class="nav">
+      <button id="prev" onclick="go(-1)">&larr; Back</button>
+      <button id="next" class="primary" onclick="go(1)">Next &rarr;</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="turn"><b>Now your turn (the lab).</b> Boot a fresh lab, write the config task yourself, run it twice, and verify on the device &mdash; the terminal is fine for that, one command at a time. See <code>lab/README.md</code>.</p>
+  </div>
+</div>
+
+<script>
+const steps = [
+  { title: "Boot two virtual routers",
+    explain: "One command reads the topology file and starts two virtual routers, connected by a virtual cable. You just built a network.",
+    cmd: "sudo containerlab deploy -t topology.clab.yml",
+    result: "clab-day1-idempotency-srl1   nokia_srlinux   {{running}}\nclab-day1-idempotency-srl2   nokia_srlinux   {{running}}",
+    badge: "Both routers are up and reachable." },
+  { title: "Apply the address (first run)",
+    explain: "We hand Ansible a file that DECLARES the desired state — “srl1’s port should have this address.” The first time, the device doesn’t have it yet, so Ansible makes the change.",
+    cmd: "ansible-playbook -i inventory.yml configure-interface.yml",
+    result: "PLAY RECAP\nsrl1 : ok=1   {{changed=1}}   failed=0",
+    badge: "changed=1 → it actually made the change." },
+  { title: "Run the SAME thing again",
+    explain: "Now run the exact same command a second time. The device already matches what we declared, so there is nothing to do. This is the whole point.",
+    cmd: "ansible-playbook -i inventory.yml configure-interface.yml",
+    result: "PLAY RECAP\nsrl1 : ok=1   {{changed=0}}   failed=0",
+    badge: "changed=0 → nothing changed. THAT is idempotency." },
+  { title: "Ask the device itself",
+    explain: "Don’t trust the tool’s report — ask the real device. We log in and look at the port. The address we declared is really there.",
+    cmd: "sr_cli \"show interface ethernet-1/1\"",
+    result: "ethernet-1/1.0 is up\n   IPv4 addr : {{10.0.0.1/30}} (static)",
+    badge: "Claim verified against truth. This is the core habit." },
+  { title: "Tear it down",
+    explain: "Throw the whole lab away with one command. Because it’s emulated, experiments are free — you can rebuild it any time.",
+    cmd: "sudo containerlab destroy -t topology.clab.yml",
+    result: "Removed container clab-day1-idempotency-srl1\nRemoved container clab-day1-idempotency-srl2",
+    badge: "Clean slate. On to your turn." }
+];
+let i = 0;
+const dotsEl = document.getElementById('dots');
+steps.forEach((_,k)=>{const d=document.createElement('div');d.className='dot';dotsEl.appendChild(d);});
+function fmt(s){
+  const red = s.indexOf('changed=0')>-1 ? false : false;
+  return s.replace(/\{\{(.*?)\}\}/g, (m,p1)=>{
+     const cls = p1.indexOf('changed=0')>-1 ? 'hl' : 'hl';
+     return '<span class="'+cls+'">'+p1+'</span>';
+  });
+}
+function render(){
+  const s = steps[i];
+  document.getElementById('stepnum').textContent = i+1;
+  document.getElementById('title').textContent = s.title;
+  document.getElementById('explain').textContent = s.explain;
+  document.getElementById('cmd').textContent = s.cmd;
+  document.getElementById('result').innerHTML = fmt(s.result);
+  document.getElementById('badge').innerHTML = '<span class="badge">'+s.badge+'</span>';
+  document.getElementById('prev').disabled = i===0;
+  document.getElementById('next').disabled = i===steps.length-1;
+  document.querySelectorAll('.dot').forEach((d,k)=>d.classList.toggle('on',k<=i));
+}
+function go(n){ i=Math.max(0,Math.min(steps.length-1,i+n)); render(); }
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+render();
+</script>
+</body></html>
