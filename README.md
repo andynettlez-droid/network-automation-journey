@@ -6,8 +6,7 @@ Field service technician → Network Automation Engineer, built in the open. **F
 
 ## Project boundary
 
-This is a standalone project for **ContainerLab network automation**. It is separate from the CCNA study / lesson-player tool at `OneDrive\Documents\ccna study` (its own git repo). Any agent or session working here must confine all work to this folder and must never read from, write to, or modify the study repo.
-
+This is a standalone project focused on **ContainerLab network automation**. It is separate from my CCNA study tooling, which lives in its own repository.
 ## How to read this repo
 
 - **`north-star-build-plan.md`** — how the build runs: roles (me = architect/verifier, Opus = designer/reviewer, Codex = implementer), safety rails, per-rung plan.
